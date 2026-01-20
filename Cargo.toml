@@ -1,0 +1,39 @@
+[package]
+name = "ipdnsd"
+version = "0.1.0"
+edition = "2021"
+description = "IP to DNS Updater - monitors IP addresses and updates DNS records"
+authors = ["Diginera"]
+license = "MIT"
+repository = "https://github.com/diginera/ipdnsd"
+keywords = ["dns", "dynamic-dns", "godaddy", "daemon"]
+categories = ["command-line-utilities", "network-programming"]
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+toml = "0.8"
+clap = { version = "4", features = ["derive"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+async-trait = "0.1"
+anyhow = "1"
+thiserror = "2"
+local-ip-address = "0.6"
+rpassword = "7"
+
+[target.'cfg(windows)'.dependencies]
+windows-service = "0.7"
+
+[target.'cfg(unix)'.dependencies]
+daemonize = "0.5"
+
+[dev-dependencies]
+wiremock = "0.6"
+tempfile = "3"
+
+[[bin]]
+name = "ipdnsd"
+path = "src/main.rs"

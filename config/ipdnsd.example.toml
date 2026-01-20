@@ -1,0 +1,45 @@
+# ipdnsd Configuration File
+#
+# Copy this file to one of the following locations:
+#   Linux:   ~/.config/ipdnsd/config.toml or /etc/ipdnsd/config.toml
+#   macOS:   ~/Library/Application Support/ipdnsd/config.toml
+#   Windows: %APPDATA%\ipdnsd\config.toml
+#
+# Before running the daemon, store your API credentials:
+#   ipdnsd set-key godaddy <your-api-key> <your-api-secret>
+
+[daemon]
+# How often to check for IP changes (in seconds)
+interval_seconds = 300  # 5 minutes
+
+# Logging level: trace, debug, info, warn, error
+log_level = "info"
+
+# DNS entries to update when IP changes
+# You can have multiple entries for different domains/subdomains
+
+# Example: Update the root A record with external IP
+[[dns_entries]]
+provider = "godaddy"
+domain = "example.com"
+record_name = "@"          # @ means root domain
+record_type = "A"
+ip_source = "external"     # Use your public IP
+# ttl = 600                # Optional: TTL in seconds (default: provider's default)
+
+# Example: Update a subdomain with internal/LAN IP
+[[dns_entries]]
+provider = "godaddy"
+domain = "example.com"
+record_name = "internal"   # internal.example.com
+record_type = "A"
+ip_source = "internal"     # Use your LAN IP
+ttl = 3600                 # 1 hour TTL
+
+# Example: Update another subdomain
+# [[dns_entries]]
+# provider = "godaddy"
+# domain = "example.com"
+# record_name = "home"
+# record_type = "A"
+# ip_source = "external"
