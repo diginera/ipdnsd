@@ -6,7 +6,8 @@
 #   Windows: %APPDATA%\ipdnsd\config.toml
 #
 # Before running the daemon, store your API credentials:
-#   ipdnsd set-key godaddy <your-api-key> <your-api-secret>
+#   ipdnsd set-key godaddy    (prompts for API Key + API Secret)
+#   ipdnsd set-key cloudflare (prompts for API Token)
 
 [daemon]
 # How often to check for IP changes (in seconds)
@@ -43,3 +44,22 @@ ttl = 3600                 # 1 hour TTL
 # record_name = "home"
 # record_type = "A"
 # ip_source = "external"
+
+# --- Cloudflare examples ---
+
+# Example: Update root domain via Cloudflare with external IP
+# [[dns_entries]]
+# provider = "cloudflare"
+# domain = "example.com"
+# record_name = "@"          # @ means root domain
+# record_type = "A"
+# ip_source = "external"
+
+# Example: Update a subdomain via Cloudflare
+# [[dns_entries]]
+# provider = "cloudflare"
+# domain = "example.com"
+# record_name = "home"
+# record_type = "A"
+# ip_source = "external"
+# ttl = 300

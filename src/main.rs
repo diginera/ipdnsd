@@ -84,15 +84,24 @@ async fn main() -> Result<()> {
         Commands::SetKey { provider } => {
             use std::io::{self, Write};
 
-            print!("API Key: ");
-            io::stdout().flush()?;
-            let mut key = String::new();
-            io::stdin().read_line(&mut key)?;
-            let key = key.trim();
+            let (key, secret) = match provider.to_lowercase().as_str() {
+                "cloudflare" => {
+                    let token = rpassword::prompt_password("API Token: ")?;
+                    (token, String::new())
+                }
+                _ => {
+                    print!("API Key: ");
+                    io::stdout().flush()?;
+                    let mut key = String::new();
+                    io::stdin().read_line(&mut key)?;
+                    let key = key.trim().to_string();
 
-            let secret = rpassword::prompt_password("API Secret: ")?;
+                    let secret = rpassword::prompt_password("API Secret: ")?;
+                    (key, secret)
+                }
+            };
 
-            secrets::store_credentials(&provider, key, &secret)?;
+            secrets::store_credentials(&provider, &key, &secret)?;
             println!("Credentials stored for provider: {}", provider);
         }
 

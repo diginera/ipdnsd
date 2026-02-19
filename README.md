@@ -5,7 +5,7 @@ A lightweight daemon that monitors your IP addresses (internal and external) and
 ## Features
 
 - **Automatic IP monitoring** - Detects changes to both internal (LAN) and external (public) IP addresses
-- **Multiple DNS providers** - Currently supports GoDaddy, designed for easy extension
+- **Multiple DNS providers** - Supports GoDaddy and Cloudflare, designed for easy extension
 - **Secure credential storage** - Credentials stored in system config with restricted permissions
 - **Cross-platform** - Works on Linux, macOS, and Windows
 - **System service support** - Run as systemd, launchd, or Windows Service
@@ -55,12 +55,21 @@ Store your DNS provider API credentials (saved to `/etc/ipdnsd/credentials.toml`
 # For GoDaddy
 ipdnsd set-key godaddy
 # You will be prompted for API Key and API Secret
+
+# For Cloudflare
+ipdnsd set-key cloudflare
+# You will be prompted for your API Token
 ```
 
 To get GoDaddy API credentials:
 1. Go to https://developer.godaddy.com/keys
 2. Create a new API key (Production environment)
 3. Save both the Key and Secret
+
+To get Cloudflare API credentials:
+1. Go to https://dash.cloudflare.com/profile/api-tokens
+2. Create a new API Token with **Zone:DNS:Edit** permission for your zone
+3. Save the token
 
 ### 2. Create Configuration File
 
@@ -77,7 +86,7 @@ Example configuration:
 interval_seconds = 300  # Check every 5 minutes
 log_level = "info"      # trace, debug, info, warn, error
 
-# Update root domain with external IP
+# Update root domain with external IP (GoDaddy)
 [[dns_entries]]
 provider = "godaddy"
 domain = "example.com"
@@ -85,7 +94,7 @@ record_name = "@"
 record_type = "A"
 ip_source = "external"
 
-# Update subdomain with internal/LAN IP
+# Update subdomain with internal/LAN IP (GoDaddy)
 [[dns_entries]]
 provider = "godaddy"
 domain = "example.com"
@@ -93,6 +102,14 @@ record_name = "internal"
 record_type = "A"
 ip_source = "internal"
 ttl = 3600  # Optional: TTL in seconds
+
+# Update root domain with external IP (Cloudflare)
+[[dns_entries]]
+provider = "cloudflare"
+domain = "example.com"
+record_name = "@"
+record_type = "A"
+ip_source = "external"
 ```
 
 ### 3. Test Configuration
@@ -218,7 +235,7 @@ Options:
 | Provider | Status | API Docs |
 |----------|--------|----------|
 | GoDaddy  | ✅ Supported | [API Docs](https://developer.godaddy.com/doc/endpoint/domains) |
-| Cloudflare | 🔜 Planned | - |
+| Cloudflare | ✅ Supported | [API Docs](https://developers.cloudflare.com/api/resources/dns/subresources/records/) |
 | AWS Route53 | 🔜 Planned | - |
 
 ## Troubleshooting
