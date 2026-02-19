@@ -4,7 +4,6 @@ use std::sync::Arc;
 use std::time::Duration;
 
 use anyhow::Result;
-use tokio::signal;
 use tokio::sync::watch;
 use tracing::{error, info, warn};
 
@@ -202,7 +201,7 @@ async fn wait_for_shutdown() -> Result<()> {
 
     #[cfg(windows)]
     {
-        signal::ctrl_c().await?;
+        tokio::signal::ctrl_c().await?;
         info!("Received Ctrl+C");
     }
 
